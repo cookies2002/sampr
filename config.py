@@ -7,22 +7,22 @@ from pyrogram import filters
 load_dotenv()
 
 # Get this value from my.telegram.org/apps
-API_ID = int(getenv("API_ID"))
-API_HASH = getenv("API_HASH")
+API_ID = "22069207"
+API_HASH = "6d33df9e82a922f66b5ad8e231743c02"
 
 # Get your token from @BotFather on Telegram.
-BOT_TOKEN = getenv("BOT_TOKEN")
+BOT_TOKEN = "7691960953:AAFmkNnk9nwcA7ja8CJKGFMmZY7zoDJCFk0"
 
 # Get your mongo url from cloud.mongodb.com
-MONGO_DB_URI = getenv("MONGO_DB_URI", None)
+MONGO_DB_URI = "mongodb+srv://xarwin2:xarwin2002@cluster0.qmetx2m.mongodb.net/?retryWrites=true&w=majority"
 
 DURATION_LIMIT_MIN = int(getenv("DURATION_LIMIT", 600))
 
 # Chat id of a group for logging bot's activities
-LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", None))
+LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", "-1002367156582"))
 
 # Get this value from @MissRose_Bot on Telegram by /id
-OWNER_ID = int(getenv("OWNER_ID", None))
+OWNER_ID = int(getenv("OWNER_ID", 7495358608))
 
 ## Fill these variables if you're deploying on heroku.
 # Your heroku app name
@@ -42,8 +42,8 @@ GIT_TOKEN = getenv(
     "GIT_TOKEN", None
 )  # Fill this variable if your upstream repository is private
 
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/NexGenBots")
-SUPPORT_GROUP = getenv("SUPPORT_GROUP", "https://t.me/NexGenSpam")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/Fidha_Bommi_X_Log")
+SUPPORT_GROUP = getenv("SUPPORT_GROUP", "https://t.me/Fidha_Bommi_X_Log")
 
 # Set this to True if you want the assistant to automatically leave chats after an interval
 AUTO_LEAVING_ASSISTANT = bool(getenv("AUTO_LEAVING_ASSISTANT", False))
@@ -68,7 +68,7 @@ TG_VIDEO_FILESIZE_LIMIT = int(getenv("TG_VIDEO_FILESIZE_LIMIT", 2145386496))
 
 
 # Get your pyrogram v2 session from Replit
-STRING1 = getenv("STRING_SESSION", None)
+STRING1 = "BQFQv9cALcyBfcGsW7UJK9XrsAcxr6mBHUXr3kZ4XgWtvxq_GTsi_riBSorniT07mcF5mC3NU7p9ux3uzlDGOic0YCJ18xcShXjje42liOHh-bu5ruy7G_E3TIFEENC9HcQ1xY3ZgeQKfAAT4Ygj66I6sxIAU2AZytze7ez2PLuFWW8HDmLf2ryFn4Jv8ljgMRRfI4HavZ84t1sXuWyFzqILbhFTu5Pv75NISX73sn9U_KyraJNLJMbF6b6ryN0XfNQxB5H7KFQqFrhL7o2U8LoYvX5MoZP9a_ye6Zz9kHoK2PTJwPtmaJn1wp1O7Y8nGS8jL7Zv8aV4DwFwLxOr-nLwpY_NoAAAAAGu2WmdAA"
 STRING2 = getenv("STRING_SESSION2", None)
 STRING3 = getenv("STRING_SESSION3", None)
 STRING4 = getenv("STRING_SESSION4", None)
@@ -84,13 +84,13 @@ confirmer = {}
 
 
 START_IMG_URL = getenv(
-    "START_IMG_URL", "https://graph.org//file/25115719697ed91ef5672.jpg"
+    "START_IMG_URL", "https://graph.org/file/f369aeb659f04cb5446b9-76bf3d200399453f77.jpg"
 )
 PING_IMG_URL = getenv(
-    "PING_IMG_URL", "https://graph.org//file/389a372e8ae039320ca6c.png"
+    "PING_IMG_URL", "https://graph.org/file/f3766e07066b22120daf2-42dddf0474fcba0b6b.jpg"
 )
-PLAYLIST_IMG_URL = "https://graph.org//file/3dfcffd0c218ead96b102.png"
-STATS_IMG_URL = "https://graph.org//file/99a8a9c13bb01f9ac7d98.png"
+PLAYLIST_IMG_URL = "https://graph.org/file/2edef3d0840d1c14c59af-67446133db229ec061.jpg"
+STATS_IMG_URL = "https://graph.org/file/f760cf3ac5c5d1f140219-133fb93f911c091eb3.jpg"
 TELEGRAM_AUDIO_URL = "https://graph.org//file/2f7debf856695e0ef0607.png"
 TELEGRAM_VIDEO_URL = "https://graph.org//file/2f7debf856695e0ef0607.png"
 STREAM_IMG_URL = "https://te.legra.ph/file/bd995b032b6bd263e2cc9.jpg"
