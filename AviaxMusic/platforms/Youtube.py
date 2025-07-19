@@ -583,9 +583,9 @@ class YouTubeAPI:
             x.download([link])
 
         def song_audio_dl():
-            fpath = f"downloads/{title}.%(ext)s"
+            fpath = f"downloads/%(id)s.%(ext)s"
             ydl_optssx = {
-                "format": format_id,
+                "format": "bestaudio[ext=m4a]",
                 "outtmpl": fpath,
                 "geo_bypass": True,
                 "nocheckcertificate": True,
@@ -597,12 +597,20 @@ class YouTubeAPI:
                     {
                         "key": "FFmpegExtractAudio",
                         "preferredcodec": "mp3",
-                        "preferredquality": "192",
+                        "preferredquality": "320",
+                        "postprocessor_args": [
+                        "-af",
+                        "stereotools=mlev=5,bass=g=10:f=100:w=0.3" ]
                     }
                 ],
             }
             x = yt_dlp.YoutubeDL(ydl_optssx)
+            info = x.extract_info(link, False)
+            xyz = os.path.join("downloads", f"{info['id']}.{info['ext']}")
+            if os.path.exists(xyz):
+                return xyz
             x.download([link])
+            return xyz
 
         if songvideo:
             await loop.run_in_executor(None, song_video_dl)
