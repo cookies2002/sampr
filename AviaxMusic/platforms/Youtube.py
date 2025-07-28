@@ -583,24 +583,23 @@ class YouTubeAPI:
             x.download([link])
 
         def song_audio_dl(link):
-            fpath = "downloads/%(id)s.%(ext)s"
-            ydl_optssx = {
-                "format": "bestaudio[ext=m4a]",
-                "outtmpl": fpath,
-                "geo_bypass": True,
-                "nocheckcertificate": True,
-                "quiet": True,
-                "no_warnings": True,
-                "cookiefile": cookie_txt_file(),
-                "prefer_ffmpeg": True,
-                "postprocessors": [
-                    {
-                        "key": "FFmpegExtractAudio",
-                        "preferredcodec": "mp3",
-                        "preferredquality": "320",
-                        "postprocessor_args": [
-                            "-af",
-                            "stereotools=mlev=5,bass=g=10:f=100:w=0.3"
+    fpath = "downloads/%(id)s.%(ext)s"
+    ydl_optssx = {
+        "format": "bestaudio[ext=m4a]",
+        "outtmpl": fpath,
+        "geo_bypass": True,
+        "nocheckcertificate": True,
+        "quiet": True,
+        "no_warnings": True,
+        "cookiefile": cookie_txt_file(),
+        "prefer_ffmpeg": True,
+        "postprocessors": [
+            {
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": "mp3",
+                "preferredquality": "320",
+                "postprocessor_args": [
+                    "-af", "stereotools=mlev=5,bass=g=10:f=100:w=0.3"
                 ]
             }
         ],
@@ -610,19 +609,21 @@ class YouTubeAPI:
     final_file = os.path.join("downloads", f"{info['id']}.mp3")
     return final_file if os.path.exists(final_file) else None
 
-        if songvideo:
-            await loop.run_in_executor(None, song_video_dl)
-            fpath = f"downloads/{title}.mp4"
-            return fpath
-        elif songaudio:
-            await loop.run_in_executor(None, song_audio_dl)
-            fpath = f"downloads/{title}.mp3"
-            return fpath
-        elif video:
-            direct = True
-            downloaded_file = await loop.run_in_executor(None, lambda:video_dl(vid_id))
-        else:
-            direct = True
-            downloaded_file = await loop.run_in_executor(None, lambda:audio_dl(vid_id))
-        
-        return downloaded_file, direct
+
+# 🔽 This is OUTSIDE the song_audio_dl function
+if songvideo:
+    await loop.run_in_executor(None, song_video_dl)
+    fpath = f"downloads/{title}.mp4"
+    return fpath
+elif songaudio:
+    await loop.run_in_executor(None, lambda: song_audio_dl(link))
+    fpath = f"downloads/{title}.mp3"
+    return fpath
+elif video:
+    direct = True
+    downloaded_file = await loop.run_in_executor(None, lambda: video_dl(vid_id))
+else:
+    direct = True
+    downloaded_file = await loop.run_in_executor(None, lambda: audio_dl(vid_id))
+
+return downloaded_file, direct
