@@ -566,68 +566,67 @@ class YouTubeAPI:
             return None
 
 # 🎵 SONG + VIDEO DOWNLOAD (Best Sound + MP4 Video)
-def song_video_dl(link, title, format_id):
-    formats = f"{format_id}+140"  # 140 = m4a audio
-    fpath = f"downloads/{title}.mp4"
-    ydl_opts = {
-        "format": formats,
-        "outtmpl": fpath,
-        "geo_bypass": True,
-        "nocheckcertificate": True,
-        "quiet": True,
-        "no_warnings": True,
-        "cookiefile": cookie_txt_file(),
-        "prefer_ffmpeg": True,
-        "merge_output_format": "mp4",
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([link])
-    return fpath if os.path.exists(fpath) else None
-
-
-# 🎧 SONG AUDIO DOWNLOAD (Bass Boosted + Stereo + 320kbps MP3)
-def song_audio_dl(link):
-    outtmpl = "downloads/%(id)s.%(ext)s"
-    ydl_opts = {
-        "format": "bestaudio[ext=m4a]/bestaudio/best",
-        "outtmpl": outtmpl,
-        "geo_bypass": True,
-        "nocheckcertificate": True,
-        "quiet": True,
-        "no_warnings": True,
-        "cookiefile": cookie_txt_file(),
-        "prefer_ffmpeg": True,
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality": "320",
-                "postprocessor_args": [
-                    "-af", "stereotools=mlev=5,bass=g=10:f=110:w=0.6"
-                ]
+        def song_video_dl():
+            formats = f"{format_id}+140"
+            fpath = f"downloads/{title}"
+            ydl_optssx = {
+                "format": formats,
+                "outtmpl": fpath,
+                "geo_bypass": True,
+                "nocheckcertificate": True,
+                "quiet": True,
+                "no_warnings": True,
+                "cookiefile" : cookie_txt_file(),
+                "prefer_ffmpeg": True,
+                "merge_output_format": "mp4",
             }
-        ],
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(link, download=True)
-        final_path = os.path.join("downloads", f"{info['id']}.mp3")
-    return final_path if os.path.exists(final_path) else None
+            x = yt_dlp.YoutubeDL(ydl_optssx)
+            x.download([link])
 
-# Place this inside your async function (example: async def handle_download(...))
-if songvideo:
-    fpath = await loop.run_in_executor(None, lambda: song_video_dl(link, title, format_id))
-    return fpath
+        def song_audio_dl():
+            fpath = f"downloads/%(id)s.%(ext)s"
+            ydl_optssx = {
+                "format": "bestaudio[ext=m4a]",
+                "outtmpl": fpath,
+                "geo_bypass": True,
+                "nocheckcertificate": True,
+                "quiet": True,
+                "no_warnings": True,
+                "cookiefile" : cookie_txt_file(),
+                "prefer_ffmpeg": True,
+                "postprocessors": [
+                    {
+                        "key": "FFmpegExtractAudio",
+                        "preferredcodec": "mp3",
+                        "preferredquality": "320",
+                        "postprocessor_args": [
+                        "-af",
+                        "stereotools=mlev=5,bass=g=10:f=100:w=0.3" ]
+                    }
+                ],
+            }
+            x = yt_dlp.YoutubeDL(ydl_optssx)
+            info = x.extract_info(link, False)
+            xyz = os.path.join("downloads", f"{info['id']}.{info['ext']}")
+            if os.path.exists(xyz):
+                return xyz
+            x.download([link])
+            return xyz
 
-elif songaudio:
-    fpath = await loop.run_in_executor(None, lambda: song_audio_dl(link))
-    return fpath
-
-elif video:
-    direct = True
-    downloaded_file = await loop.run_in_executor(None, lambda: video_dl(vid_id))
-
-else:
-    direct = True
-    downloaded_file = await loop.run_in_executor(None, lambda: audio_dl(vid_id))
-
+        if songvideo:
+            await loop.run_in_executor(None, song_video_dl)
+            fpath = f"downloads/{title}.mp4"
+            return fpath
+        elif songaudio:
+            await loop.run_in_executor(None, song_audio_dl)
+            fpath = f"downloads/{title}.mp3"
+            return fpath
+        elif video:
+            direct = True
+            downloaded_file = await loop.run_in_executor(None, lambda:video_dl(vid_id))
+        else:
+            direct = True
+            downloaded_file = await loop.run_in_executor(None, lambda:audio_dl(vid_id))
+        
+        return downloaded_file, direct
 return downloaded_file, direct
