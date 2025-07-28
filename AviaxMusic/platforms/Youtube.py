@@ -906,8 +906,14 @@ class YouTubeAPI:
                         "preferredcodec": "mp3",
                         "preferredquality": "320",
                         "postprocessor_args": [
-                        "-af",
-                        "stereotools=mlev=5,bass=g=10:f=100:w=0.3" ]
+                          "-af",
+                          "stereotools=mlev=5, \
+                          bass=g=10:f=100:w=0.3, \
+                          apad, \
+                          dynaudnorm=f=200:g=31:p=1, \
+                          aresample=48000, \
+                          volume=1.5"
+                       ]
                     }
                 ],
             }
