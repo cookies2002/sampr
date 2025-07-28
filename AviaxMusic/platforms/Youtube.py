@@ -501,13 +501,13 @@ class YouTubeAPI:
                 if status == 'success':
                     songlink = songData['audio_url']
                     audio_url = base64.b64decode(songlink).decode()
+
+
 def cookie_txt_file():
     cookie_dir = f"{os.getcwd()}/cookies"
     cookies_files = [f for f in os.listdir(cookie_dir) if f.endswith(".txt")]
-
     cookie_file = os.path.join(cookie_dir, random.choice(cookies_files))
-    return cookie_file
-
+    return cookie_fil
 
 async def download_song(link: str):
     video_id = link.split('v=')[-1].split('&')[0]
