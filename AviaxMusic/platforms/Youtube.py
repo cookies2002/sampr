@@ -565,10 +565,11 @@ class YouTubeAPI:
                 print(f"Error in downloading song: {str(e)}")
             return None
 
+# 🎵 SONG + VIDEO DOWNLOAD (Best Sound + MP4 Video)
 def song_video_dl(link, title, format_id):
-    formats = f"{format_id}+140"
+    formats = f"{format_id}+140"  # 140 = m4a audio
     fpath = f"downloads/{title}.mp4"
-    ydl_optssx = {
+    ydl_opts = {
         "format": formats,
         "outtmpl": fpath,
         "geo_bypass": True,
@@ -579,16 +580,17 @@ def song_video_dl(link, title, format_id):
         "prefer_ffmpeg": True,
         "merge_output_format": "mp4",
     }
-    x = yt_dlp.YoutubeDL(ydl_optssx)
-    x.download([link])
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([link])
     return fpath if os.path.exists(fpath) else None
 
 
+# 🎧 SONG AUDIO DOWNLOAD (Bass Boosted + Stereo + 320kbps MP3)
 def song_audio_dl(link):
-    fpath = "downloads/%(id)s.%(ext)s"
-    ydl_optssx = {
-        "format": "bestaudio[ext=m4a]",
-        "outtmpl": fpath,
+    outtmpl = "downloads/%(id)s.%(ext)s"
+    ydl_opts = {
+        "format": "bestaudio[ext=m4a]/bestaudio/best",
+        "outtmpl": outtmpl,
         "geo_bypass": True,
         "nocheckcertificate": True,
         "quiet": True,
@@ -601,19 +603,17 @@ def song_audio_dl(link):
                 "preferredcodec": "mp3",
                 "preferredquality": "320",
                 "postprocessor_args": [
-                    "-af", "stereotools=mlev=5,bass=g=10:f=100:w=0.3"
+                    "-af", "stereotools=mlev=5,bass=g=10:f=110:w=0.6"
                 ]
             }
         ],
     }
-    x = yt_dlp.YoutubeDL(ydl_optssx)
-    info = x.extract_info(link)
-    final_file = os.path.join("downloads", f"{info['id']}.mp3")
-    return final_file if os.path.exists(final_file) else None
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(link, download=True)
+        final_path = os.path.join("downloads", f"{info['id']}.mp3")
+    return final_path if os.path.exists(final_path) else None
 
-
-# 🔄 Async Wrapper Block (INSIDE your async function)
-# Make sure this is inside an async def function like: async def handle_download(...)
+# Place this inside your async function (example: async def handle_download(...))
 if songvideo:
     fpath = await loop.run_in_executor(None, lambda: song_video_dl(link, title, format_id))
     return fpath
@@ -631,4 +631,3 @@ else:
     downloaded_file = await loop.run_in_executor(None, lambda: audio_dl(vid_id))
 
 return downloaded_file, direct
-
