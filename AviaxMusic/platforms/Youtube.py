@@ -564,36 +564,38 @@ class YouTubeAPI:
             except Exception as e:
                 print(f"Error in downloading song: {str(e)}")
             return None
-        
-        def song_video_dl():
-            formats = f"{format_id}+140"
-            fpath = f"downloads/{title}"
-            ydl_optssx = {
-                "format": formats,
-                "outtmpl": fpath,
-                "geo_bypass": True,
-                "nocheckcertificate": True,
-                "quiet": True,
-                "no_warnings": True,
-                "cookiefile" : cookie_txt_file(),
-                "prefer_ffmpeg": True,
-                "merge_output_format": "mp4",
-            }
-            x = yt_dlp.YoutubeDL(ydl_optssx)
-            x.download([link])
 
-      def song_audio_dl(link):
-          fpath = "downloads/%(id)s.%(ext)s"
-          ydl_optssx = {
-              "format": "bestaudio[ext=m4a]",
-              "outtmpl": fpath,
-              "geo_bypass": True,
-              "nocheckcertificate": True,
-              "quiet": True,
-              "no_warnings": True,
-              "cookiefile": cookie_txt_file(),
-              "prefer_ffmpeg": True,
-              "postprocessors": [
+def song_video_dl(link, title, format_id):
+    formats = f"{format_id}+140"
+    fpath = f"downloads/{title}.mp4"
+    ydl_optssx = {
+        "format": formats,
+        "outtmpl": fpath,
+        "geo_bypass": True,
+        "nocheckcertificate": True,
+        "quiet": True,
+        "no_warnings": True,
+        "cookiefile": cookie_txt_file(),
+        "prefer_ffmpeg": True,
+        "merge_output_format": "mp4",
+    }
+    x = yt_dlp.YoutubeDL(ydl_optssx)
+    x.download([link])
+    return fpath if os.path.exists(fpath) else None
+
+
+def song_audio_dl(link):
+    fpath = "downloads/%(id)s.%(ext)s"
+    ydl_optssx = {
+        "format": "bestaudio[ext=m4a]",
+        "outtmpl": fpath,
+        "geo_bypass": True,
+        "nocheckcertificate": True,
+        "quiet": True,
+        "no_warnings": True,
+        "cookiefile": cookie_txt_file(),
+        "prefer_ffmpeg": True,
+        "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
                 "preferredcodec": "mp3",
@@ -610,20 +612,23 @@ class YouTubeAPI:
     return final_file if os.path.exists(final_file) else None
 
 
-# 🔽 This is OUTSIDE the song_audio_dl function
+# 🔄 Async Wrapper Block (INSIDE your async function)
+# Make sure this is inside an async def function like: async def handle_download(...)
 if songvideo:
-    await loop.run_in_executor(None, song_video_dl)
-    fpath = f"downloads/{title}.mp4"
+    fpath = await loop.run_in_executor(None, lambda: song_video_dl(link, title, format_id))
     return fpath
+
 elif songaudio:
-    await loop.run_in_executor(None, lambda: song_audio_dl(link))
-    fpath = f"downloads/{title}.mp3"
+    fpath = await loop.run_in_executor(None, lambda: song_audio_dl(link))
     return fpath
+
 elif video:
     direct = True
     downloaded_file = await loop.run_in_executor(None, lambda: video_dl(vid_id))
+
 else:
     direct = True
     downloaded_file = await loop.run_in_executor(None, lambda: audio_dl(vid_id))
 
 return downloaded_file, direct
+
