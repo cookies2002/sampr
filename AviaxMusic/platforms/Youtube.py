@@ -582,18 +582,18 @@ class YouTubeAPI:
             x = yt_dlp.YoutubeDL(ydl_optssx)
             x.download([link])
 
-        def song_audio_dl(link):
-    fpath = "downloads/%(id)s.%(ext)s"
-    ydl_optssx = {
-        "format": "bestaudio[ext=m4a]",
-        "outtmpl": fpath,
-        "geo_bypass": True,
-        "nocheckcertificate": True,
-        "quiet": True,
-        "no_warnings": True,
-        "cookiefile": cookie_txt_file(),
-        "prefer_ffmpeg": True,
-        "postprocessors": [
+      def song_audio_dl(link):
+          fpath = "downloads/%(id)s.%(ext)s"
+          ydl_optssx = {
+              "format": "bestaudio[ext=m4a]",
+              "outtmpl": fpath,
+              "geo_bypass": True,
+              "nocheckcertificate": True,
+              "quiet": True,
+              "no_warnings": True,
+              "cookiefile": cookie_txt_file(),
+              "prefer_ffmpeg": True,
+              "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
                 "preferredcodec": "mp3",
