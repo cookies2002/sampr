@@ -170,11 +170,12 @@ queue_6 : "<b>🕚 ᴅᴜʀᴀᴛɪᴏɴ :</b> 𝖴𝗇𝗄𝗇𝗈𝗐𝗇 𝖣
 queue_7 : "\n𝖢𝗅𝗂𝖼𝗄 𝖮𝗇 𝖳𝗁𝖾 𝖡𝗎𝗍𝗍𝗈𝗇 𝖡𝖾𝗅𝗈𝗐 𝖳𝗈 𝖦𝖾𝗍 𝖶𝗁𝗈𝗅𝖾 𝖰𝗎𝖾𝗎𝖾𝖽 𝖫𝗂𝗌𝗍 ."
 queue_8 : "<b>{0} ᴘʟᴀʏᴇʀ</b>\n\n <b>sᴛʀᴇᴀᴍɪɴɢ :</b> {1}\n\n <b>sᴛʀᴇᴀᴍ ᴛʏᴘᴇ :</b> {2}\n <b>ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {3}\n{4}"
 
-stream_1 : "<blockquote><b>°❀⋆.ೃ࿔*:･°❀⋆.ೃ࿔*:･˚⋆𐙚｡ 𖦹.ᡣ𐭩˚˹ ☙ ခ།ഴᰖ‌᭄⃭ꙍ ♪ ത᪙᪙𑂞 𝆺𝅥𝅯 ˼ ✧˚.⋆</blockquote>\n\n<b><blockquote> 𝗧 ɪ ꭲ ꮮ 𝙴 :</b> <a href={0}>{1}</a>\n<b> 𝗗 ʋ ꮢ ꭺ ꭲ ɪ ɵ ɴ :</b> {2} ᴍɪɴᴜᴛᴇs\n<b> 𝗥 ꭼ 𝚀 ʋ ꭼ ꮪ ꭲ 𝗕 ꮍ :</b> {3}</blockquote>\n\n<blockquote><b>❖ 𝗣 ꮎ ꮃ ꭼ ꭱ ꭼ ꭰ 𝗕 ꮍ : [˹☙ ခ།ഴᰖ‌᭄⃭ꙍ ♪ ത᪙᪙𑂞 𝆺𝅥𝅯˼](https://t.me/Fidha_X_Channel)</b></blockquote>"
-stream_2 : "<blockquote><b>°❀⋆.ೃ࿔*:･°❀⋆.ೃ࿔*:･˚⋆𐙚｡ 𖦹.ᡣ𐭩˚˹ ☙ ခ།ഴᰖ‌᭄⃭ꙍ ♪ ത᪙᪙𑂞 𝆺𝅥𝅯 ˼ ✧˚.⋆</b></blockquote>\n\n<blockquote>☘ Sᴛʀᴇᴀᴍ ᴛʏᴘᴇ :</b> ʟɪᴠᴇ sᴛʀᴇᴀᴍ [ᴜʀʟ]\n<b> 𝗥 ꭼ 𝚀 ʋ ꭼ ꮪ ꭲ 𝗕 ꮍ :</b> {0}</blockquote>\n\n<blockquote><b>❖ 𝗣 ꮎ ꮃ ꭼ ꭱ ꭼ ꭰ 𝗕  : [˹☙ ခ།ഴᰖ‌᭄⃭ꙍ ♪ ത᪙᪙𑂞 𝆺𝅥𝅯˼](https://t.me/Fidha_X_Channel)</b></blockquote>"
+stream_1 = "<blockquote><b>°❀⋆.ೃ࿔*:･°❀⋆.ೃ࿔*:･˚⋆𐙚｡ 𖦹.ᡣ𐭩˚˹ ☙ ခ།ഴᰖ‌᭄⃭ꙍ ♪ ത᪙᪙𑂞 𝆺𝅥𝅯 ˼ ✧˚.⋆</b></blockquote>\n\n<blockquote><b>𝗧 ɪ ꭲ ꮮ 𝙴 :</b> <a href='{0}'>{1}</a><br><b>𝗗 ʋ ꮢ ꭺ ꭲ ɪ ɵ ɴ :</b> {2} ᴍɪɴᴜᴛᴇs<br><b>𝗥 ꭼ 𝚀 ʋ ꭼ ꮪ ꭲ 𝗕 ꮍ :</b> {3}</blockquote>\n\n<blockquote><b>❖ 𝗣 ꮎ ꮃ ꭼ ꭱ ꭼ ꭰ 𝗕 ꮍ :</b> <a href='https://t.me/Fidha_X_Channel'>˹☙ ခ།ഴᰖ‌᭄⃭ꙍ ♪ ത᪙᪙𑂞 𝆺𝅥𝅯˼</a></blockquote>"
+stream_2 = "<blockquote><b>°❀⋆.ೃ࿔*:･°❀⋆.ೃ࿔*:･˚⋆𐙚｡ 𖦹.ᡣ𐭩˚˹ ☙ ခ།ഴᰖ‌᭄⃭ꙍ ♪ ത᪙᪙𑂞 𝆺𝅥𝅯 ˼ ✧˚.⋆</b></blockquote>\n\n<blockquote><b>☘ Sᴛʀᴇᴀᴍ ᴛʏᴘᴇ :</b> ʟɪᴠᴇ sᴛʀᴇᴀᴍ [ᴜʀʟ]<br><b>𝗥 ꭼ 𝚀 ʋ ꭼ ꮪ ꭲ 𝗕 ꮍ :</b> {0}</blockquote>\n\n<blockquote><b>❖ 𝗣 ꮎ ꮃ ꭼ ꭱ ꭼ ꭰ 𝗕 :</b> <a href='https://t.me/Fidha_X_Channel'>˹☙ ခ།ഴᰖ‌᭄⃭ꙍ ♪ ത᪙᪙𑂞 𝆺𝅥𝅯˼</a></blockquote>"
 
-CLOSE_BUTTON  : "𝖢𝗅𝗈𝗌𝖾"
-BACK_BUTTON : "𝖡𝖺𝖼𝗄"
+
+CLOSE_BUTTON  : "🥂 ᴄʟᴏsᴇ 🥂"
+BACK_BUTTON : "🥀 ʙᴀᴄᴋ 🥀"
 
 PL_B_1 : "𝖬𝖾𝗇𝗎 📥"
 S_B_1 : "⛩️ ᴧᴅᴅ мᴇ ʙᴧʙʏ ⛩️"
