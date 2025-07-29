@@ -30,29 +30,37 @@ class Aviax(Client):
         self.username = self.me.username
         self.mention = self.me.mention
 
+        # ✅ Test message to log group
         try:
             await self.send_message(
-                chat_id=config.LOG_GROUP_ID,
-                text=f"<u><b>» {self.mention} ʙᴏᴛ sᴛᴀʀᴛᴇᴅ :</b><u>\n\nɪᴅ : <code>{self.id}</code>\nɴᴀᴍᴇ : {self.name}\nᴜsᴇʀɴᴀᴍᴇ : @{self.username}",
+                config.LOG_GROUP_ID,
+                f"<b>✅ {self.mention} Bot started successfully!</b>\n\n"
+                f"<b>ID:</b> <code>{self.id}</code>\n"
+                f"<b>Name:</b> {self.name}\n"
+                f"<b>Username:</b> @{self.username}",
             )
-        except (errors.ChannelInvalid, errors.PeerIdInvalid):
+        except (errors.ChatAdminRequired, errors.ChannelInvalid, errors.PeerIdInvalid) as e:
             LOGGER(__name__).error(
-                "Bot has failed to access the log group/channel. Make sure that you have added your bot to your log group/channel."
+                f"❌ Cannot send message to LOG_GROUP_ID ({config.LOG_GROUP_ID}).\nReason: {type(e).__name__}"
             )
             exit()
-        except Exception as ex:
+        except Exception as e:
             LOGGER(__name__).error(
-                f"Bot has failed to access the log group/channel.\n  Reason : {type(ex).__name__}."
+                f"❌ Unknown error while sending log message: {e}"
             )
             exit()
 
-        a = await self.get_chat_member(config.LOG_GROUP_ID, self.id)
-        if a.status != ChatMemberStatus.ADMINISTRATOR:
-            LOGGER(__name__).error(
-                "Please promote your bot as an admin in your log group/channel."
-            )
+        # ✅ Check admin rights
+        try:
+            member = await self.get_chat_member(config.LOG_GROUP_ID, self.id)
+            if member.status != ChatMemberStatus.ADMINISTRATOR:
+                LOGGER(__name__).error("❌ Bot is not admin in the log group.")
+                exit()
+        except Exception as e:
+            LOGGER(__name__).error(f"❌ Cannot verify bot's admin status.\nReason: {e}")
             exit()
-        LOGGER(__name__).info(f"Music Bot Started as {self.name}")
+
+        LOGGER(__name__).info(f"✅ Music Bot started as {self.name}")
 
     async def stop(self):
         await super().stop()
