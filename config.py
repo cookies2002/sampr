@@ -12,7 +12,7 @@ API_ID = "22069207"
 API_HASH = "6d33df9e82a922f66b5ad8e231743c02"
 
 # Get your token from @BotFather on Telegram.
-BOT_TOKEN = getenv("BOT_TOKEN").
+BOT_TOKEN = getenv("BOT_TOKEN")
 
 
 # Get your mongo url from cloud.mongodb.com
@@ -123,6 +123,7 @@ if SUPPORT_GROUP:
         raise SystemExit(
             "[ERROR] - Your SUPPORT_GROUP url is wrong. Please ensure that it starts with https://"
         )
+
 
 
 
