@@ -4,7 +4,7 @@ if sys.platform != "win32":
     uvloop.install()
 
 from pyrogram import Client, errors
-from pyrogram.enums import ChatMemberStatus, ParseMode
+from pyrogram.enums import ChatMemberStatus
 
 import config
 from ..logging import LOGGER
@@ -12,7 +12,7 @@ from ..logging import LOGGER
 
 class Aviax(Client):
     def __init__(self):
-        LOGGER(__name__).info("Starting Bot...")
+        LOGGER(__name__).info("🔁 Initializing bot client...")
         super().__init__(
             name="AviaxMusic",
             api_id=config.API_ID,
@@ -24,12 +24,13 @@ class Aviax(Client):
 
     async def start(self):
         await super().start()
+
         self.id = self.me.id
         self.name = self.me.first_name
         self.username = self.me.username
         self.mention = self.me.mention
 
-        # ✅ Test message to log group
+        # ✅ Send startup message to log group
         try:
             await self.send_message(
                 config.LOG_GROUP_ID,
@@ -49,7 +50,7 @@ class Aviax(Client):
             )
             exit()
 
-        # ✅ Check admin rights
+        # ✅ Check bot is admin in log group
         try:
             member = await self.get_chat_member(config.LOG_GROUP_ID, self.id)
             if member.status != ChatMemberStatus.ADMINISTRATOR:
@@ -59,7 +60,9 @@ class Aviax(Client):
             LOGGER(__name__).error(f"❌ Cannot verify bot's admin status.\nReason: {e}")
             exit()
 
-        LOGGER(__name__).info(f"✅ Music Bot started as {self.name}")
+        LOGGER(__name__).info(f"✅ Music Bot started as {self.name} (@{self.username})")
 
     async def stop(self):
+        LOGGER(__name__).info("🛑 Stopping bot...")
         await super().stop()
+        LOGGER(__name__).info("✅ Bot stopped.")
