@@ -39,21 +39,19 @@ class Aviax(Client):
             f"<b>Username:</b> @{self.username}"
         )
 
-        # ✅ Attempt to send log message to log group
+        # Try to send message to LOG_GROUP_ID
         try:
             await self.send_message(config.LOG_GROUP_ID, log_message)
         except errors.PeerIdInvalid:
-            LOGGER(__name__).warning(
-                f"⚠️ PeerIdInvalid: Telegram does not recognize group ID {config.LOG_GROUP_ID} yet."
-            )
+            LOGGER(__name__).warning(f"⚠️ PeerIdInvalid: Group ID {config.LOG_GROUP_ID} is not accessible.")
             LOGGER(__name__).info("💡 Sending log message to OWNER_ID instead.")
             try:
                 await self.send_message(
-                    config.OWNER_ID,  # ✅ Make sure this is set in config.py
-                    f"⚠️ Log group not ready.\n\n{log_message}"
+                    config.OWNER_ID,
+                    f"⚠️ Log group invalid or bot not added.\n\n{log_message}"
                 )
             except Exception as e:
-                LOGGER(__name__).error(f"❌ Fallback log to OWNER_ID failed: {e}")
+                LOGGER(__name__).error(f"❌ Failed fallback to OWNER_ID: {e}")
             exit()
         except errors.ChatAdminRequired:
             LOGGER(__name__).error("❌ Bot is not admin in the log group.")
@@ -65,7 +63,7 @@ class Aviax(Client):
             LOGGER(__name__).error(f"❌ Unknown error while sending log message: {e}")
             exit()
 
-        # ✅ Check admin rights in log group
+        # Check if bot is admin in log group
         try:
             member = await self.get_chat_member(config.LOG_GROUP_ID, self.id)
             if member.status != ChatMemberStatus.ADMINISTRATOR:
@@ -81,3 +79,4 @@ class Aviax(Client):
         LOGGER(__name__).info("🛑 Stopping bot...")
         await super().stop()
         LOGGER(__name__).info("✅ Bot stopped.")
+        
