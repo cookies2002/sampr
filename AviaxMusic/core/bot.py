@@ -30,7 +30,10 @@ class Aviax(Client):
         self.username = self.me.username
         self.mention = self.me.mention
 
-        # ✅ Send startup message to log group
+        LOGGER(__name__).info(f"✅ Logged in as {self.name} (@{self.username})")
+
+        # ✅ Test sending log message
+        LOGGER(__name__).info(f"📤 Trying to send log message to group ID: {config.LOG_GROUP_ID}")
         try:
             await self.send_message(
                 config.LOG_GROUP_ID,
@@ -39,28 +42,34 @@ class Aviax(Client):
                 f"<b>Name:</b> {self.name}\n"
                 f"<b>Username:</b> @{self.username}",
             )
-        except (errors.ChatAdminRequired, errors.ChannelInvalid, errors.PeerIdInvalid) as e:
+        except errors.ChatAdminRequired:
+            LOGGER(__name__).error(f"❌ Bot is not admin in the log group ({config.LOG_GROUP_ID}).")
+            exit()
+        except errors.ChannelInvalid:
+            LOGGER(__name__).error(f"❌ The log group ID is invalid or no longer exists: {config.LOG_GROUP_ID}")
+            exit()
+        except errors.PeerIdInvalid:
             LOGGER(__name__).error(
-                f"❌ Cannot send message to LOG_GROUP_ID ({config.LOG_GROUP_ID}).\nReason: {type(e).__name__}"
+                f"❌ PeerIdInvalid: Telegram doesn’t recognize this group ID yet.\n"
+                f"➡️ Make sure your bot received a message from the log group at least once."
             )
+            LOGGER(__name__).info("💡 Tip: Send a message in the log group or restart the bot after /getid")
             exit()
         except Exception as e:
-            LOGGER(__name__).error(
-                f"❌ Unknown error while sending log message: {e}"
-            )
+            LOGGER(__name__).error(f"❌ Unknown error while sending log message: {e}")
             exit()
 
-        # ✅ Check bot is admin in log group
+        # ✅ Check if bot is admin in the log group
         try:
             member = await self.get_chat_member(config.LOG_GROUP_ID, self.id)
             if member.status != ChatMemberStatus.ADMINISTRATOR:
-                LOGGER(__name__).error("❌ Bot is not admin in the log group.")
+                LOGGER(__name__).error("❌ Bot is NOT admin in the log group.")
                 exit()
         except Exception as e:
-            LOGGER(__name__).error(f"❌ Cannot verify bot's admin status.\nReason: {e}")
+            LOGGER(__name__).error(f"❌ Could not verify bot's admin status. Reason: {e}")
             exit()
 
-        LOGGER(__name__).info(f"✅ Music Bot started as {self.name} (@{self.username})")
+        LOGGER(__name__).info(f"✅ Music Bot started successfully as {self.name} (@{self.username})")
 
     async def stop(self):
         LOGGER(__name__).info("🛑 Stopping bot...")
