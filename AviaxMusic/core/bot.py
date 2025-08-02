@@ -1,4 +1,5 @@
 import sys
+
 if sys.platform != "win32":
     import uvloop
     uvloop.install()
@@ -30,7 +31,9 @@ class Aviax(Client):
         self.mention = self.me.mention
 
         LOGGER(__name__).info(f"✅ Logged in as {self.name} (@{self.username})")
-        LOGGER(__name__).info(f"📤 Trying to send log message to group ID: {config.LOG_GROUP_ID}")
+
+        log_target = config.LOG_GROUP_ID if config.LOG_GROUP_ID != 0 else config.LOG_GROUP_USERNAME
+        LOGGER(__name__).info(f"📤 Trying to send log message to: {log_target}")
 
         log_message = (
             f"<b>✅ {self.mention} Bot started successfully!</b>\n\n"
@@ -39,39 +42,36 @@ class Aviax(Client):
             f"<b>Username:</b> @{self.username}"
         )
 
-        # Try to send message to LOG_GROUP_ID
         try:
-            await self.send_message(config.LOG_GROUP_ID, log_message)
+            await self.send_message(log_target, log_message)
         except errors.PeerIdInvalid:
-            LOGGER(__name__).warning(f"⚠️ PeerIdInvalid: Group ID {config.LOG_GROUP_ID} is not accessible.")
-            LOGGER(__name__).info("💡 Sending log message to OWNER_ID instead.")
+            LOGGER(__name__).warning("⚠️ Group ID or username not recognized.")
+            LOGGER(__name__).info("💡 Sending fallback log to OWNER_ID instead.")
             try:
-                await self.send_message(
-                    config.OWNER_ID,
-                    f"⚠️ Log group invalid or bot not added.\n\n{log_message}"
-                )
+                await self.send_message(config.OWNER_ID, f"⚠️ Could not log to group.\n\n{log_message}")
             except Exception as e:
-                LOGGER(__name__).error(f"❌ Failed fallback to OWNER_ID: {e}")
+                LOGGER(__name__).error(f"❌ Fallback to OWNER_ID failed: {e}")
             exit()
         except errors.ChatAdminRequired:
             LOGGER(__name__).error("❌ Bot is not admin in the log group.")
             exit()
         except errors.ChannelInvalid:
-            LOGGER(__name__).error("❌ The log group ID is invalid or deleted.")
+            LOGGER(__name__).error("❌ The log group is invalid or deleted.")
             exit()
         except Exception as e:
             LOGGER(__name__).error(f"❌ Unknown error while sending log message: {e}")
             exit()
 
-        # Check if bot is admin in log group
-        try:
-            member = await self.get_chat_member(config.LOG_GROUP_ID, self.id)
-            if member.status != ChatMemberStatus.ADMINISTRATOR:
-                LOGGER(__name__).error("❌ Bot is NOT admin in the log group.")
+        # Check admin rights only if numeric ID is used
+        if config.LOG_GROUP_ID != 0:
+            try:
+                member = await self.get_chat_member(config.LOG_GROUP_ID, self.id)
+                if member.status != ChatMemberStatus.ADMINISTRATOR:
+                    LOGGER(__name__).error("❌ Bot is NOT admin in the log group.")
+                    exit()
+            except Exception as e:
+                LOGGER(__name__).error(f"❌ Could not verify admin status: {e}")
                 exit()
-        except Exception as e:
-            LOGGER(__name__).error(f"❌ Could not verify admin status: {e}")
-            exit()
 
         LOGGER(__name__).info(f"✅ Bot fully started as {self.name} (@{self.username})")
 
@@ -79,4 +79,3 @@ class Aviax(Client):
         LOGGER(__name__).info("🛑 Stopping bot...")
         await super().stop()
         LOGGER(__name__).info("✅ Bot stopped.")
-        
