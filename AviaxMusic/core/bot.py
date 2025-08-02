@@ -1,81 +1,57 @@
-import sys
+import uvloop
 
-if sys.platform != "win32":
-    import uvloop
-    uvloop.install()
+uvloop.install()
 
 from pyrogram import Client, errors
-from pyrogram.enums import ChatMemberStatus
+from pyrogram.enums import ChatMemberStatus, ParseMode
+
 import config
 from ..logging import LOGGER
 
 
 class Aviax(Client):
     def __init__(self):
-        LOGGER(__name__).info("🔁 Initializing bot client...")
+        LOGGER(__name__).info(f"Starting Bot...")
         super().__init__(
             name="AviaxMusic",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             bot_token=config.BOT_TOKEN,
             in_memory=True,
+            parse_mode=ParseMode.HTML,
             max_concurrent_transmissions=7,
         )
 
     async def start(self):
         await super().start()
-
         self.id = self.me.id
-        self.name = self.me.first_name
+        self.name = self.me.first_name + " " + (self.me.last_name or "")
         self.username = self.me.username
         self.mention = self.me.mention
 
-        LOGGER(__name__).info(f"✅ Logged in as {self.name} (@{self.username})")
-
-        log_target = config.LOG_GROUP_ID if config.LOG_GROUP_ID != 0 else config.LOG_GROUP_USERNAME
-        LOGGER(__name__).info(f"📤 Trying to send log message to: {log_target}")
-
-        log_message = (
-            f"<b>✅ {self.mention} Bot started successfully!</b>\n\n"
-            f"<b>ID:</b> <code>{self.id}</code>\n"
-            f"<b>Name:</b> {self.name}\n"
-            f"<b>Username:</b> @{self.username}"
-        )
-
         try:
-            await self.send_message(log_target, log_message)
-        except errors.PeerIdInvalid:
-            LOGGER(__name__).warning("⚠️ Group ID or username not recognized.")
-            LOGGER(__name__).info("💡 Sending fallback log to OWNER_ID instead.")
-            try:
-                await self.send_message(config.OWNER_ID, f"⚠️ Could not log to group.\n\n{log_message}")
-            except Exception as e:
-                LOGGER(__name__).error(f"❌ Fallback to OWNER_ID failed: {e}")
+            await self.send_message(
+                chat_id=config.LOG_GROUP_ID,
+                text=f"<u><b>» {self.mention} ʙᴏᴛ sᴛᴀʀᴛᴇᴅ :</b><u>\n\nɪᴅ : <code>{self.id}</code>\nɴᴀᴍᴇ : {self.name}\nᴜsᴇʀɴᴀᴍᴇ : @{self.username}",
+            )
+        except (errors.ChannelInvalid, errors.PeerIdInvalid):
+            LOGGER(__name__).error(
+                "Bot has failed to access the log group/channel. Make sure that you have added your bot to your log group/channel."
+            )
             exit()
-        except errors.ChatAdminRequired:
-            LOGGER(__name__).error("❌ Bot is not admin in the log group.")
-            exit()
-        except errors.ChannelInvalid:
-            LOGGER(__name__).error("❌ The log group is invalid or deleted.")
-            exit()
-        except Exception as e:
-            LOGGER(__name__).error(f"❌ Unknown error while sending log message: {e}")
+        except Exception as ex:
+            LOGGER(__name__).error(
+                f"Bot has failed to access the log group/channel.\n  Reason : {type(ex).__name__}."
+            )
             exit()
 
-        # Check admin rights only if numeric ID is used
-        if config.LOG_GROUP_ID != 0:
-            try:
-                member = await self.get_chat_member(config.LOG_GROUP_ID, self.id)
-                if member.status != ChatMemberStatus.ADMINISTRATOR:
-                    LOGGER(__name__).error("❌ Bot is NOT admin in the log group.")
-                    exit()
-            except Exception as e:
-                LOGGER(__name__).error(f"❌ Could not verify admin status: {e}")
-                exit()
-
-        LOGGER(__name__).info(f"✅ Bot fully started as {self.name} (@{self.username})")
+        a = await self.get_chat_member(config.LOG_GROUP_ID, self.id)
+        if a.status != ChatMemberStatus.ADMINISTRATOR:
+            LOGGER(__name__).error(
+                "Please promote your bot as an admin in your log group/channel."
+            )
+            exit()
+        LOGGER(__name__).info(f"Music Bot Started as {self.name}")
 
     async def stop(self):
-        LOGGER(__name__).info("🛑 Stopping bot...")
         await super().stop()
-        LOGGER(__name__).info("✅ Bot stopped.")
