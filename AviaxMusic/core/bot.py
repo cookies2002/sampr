@@ -5,7 +5,6 @@ if sys.platform != "win32":
 
 from pyrogram import Client, errors
 from pyrogram.enums import ChatMemberStatus
-
 import config
 from ..logging import LOGGER
 
@@ -31,45 +30,52 @@ class Aviax(Client):
         self.mention = self.me.mention
 
         LOGGER(__name__).info(f"✅ Logged in as {self.name} (@{self.username})")
-
-        # ✅ Test sending log message
         LOGGER(__name__).info(f"📤 Trying to send log message to group ID: {config.LOG_GROUP_ID}")
+
+        log_message = (
+            f"<b>✅ {self.mention} Bot started successfully!</b>\n\n"
+            f"<b>ID:</b> <code>{self.id}</code>\n"
+            f"<b>Name:</b> {self.name}\n"
+            f"<b>Username:</b> @{self.username}"
+        )
+
+        # ✅ Attempt to send log message to log group
         try:
-            await self.send_message(
-                config.LOG_GROUP_ID,
-                f"<b>✅ {self.mention} Bot started successfully!</b>\n\n"
-                f"<b>ID:</b> <code>{self.id}</code>\n"
-                f"<b>Name:</b> {self.name}\n"
-                f"<b>Username:</b> @{self.username}",
+            await self.send_message(config.LOG_GROUP_ID, log_message)
+        except errors.PeerIdInvalid:
+            LOGGER(__name__).warning(
+                f"⚠️ PeerIdInvalid: Telegram does not recognize group ID {config.LOG_GROUP_ID} yet."
             )
+            LOGGER(__name__).info("💡 Sending log message to OWNER_ID instead.")
+            try:
+                await self.send_message(
+                    config.OWNER_ID,  # ✅ Make sure this is set in config.py
+                    f"⚠️ Log group not ready.\n\n{log_message}"
+                )
+            except Exception as e:
+                LOGGER(__name__).error(f"❌ Fallback log to OWNER_ID failed: {e}")
+            exit()
         except errors.ChatAdminRequired:
-            LOGGER(__name__).error(f"❌ Bot is not admin in the log group ({config.LOG_GROUP_ID}).")
+            LOGGER(__name__).error("❌ Bot is not admin in the log group.")
             exit()
         except errors.ChannelInvalid:
-            LOGGER(__name__).error(f"❌ The log group ID is invalid or no longer exists: {config.LOG_GROUP_ID}")
-            exit()
-        except errors.PeerIdInvalid:
-            LOGGER(__name__).error(
-                f"❌ PeerIdInvalid: Telegram doesn’t recognize this group ID yet.\n"
-                f"➡️ Make sure your bot received a message from the log group at least once."
-            )
-            LOGGER(__name__).info("💡 Tip: Send a message in the log group or restart the bot after /getid")
+            LOGGER(__name__).error("❌ The log group ID is invalid or deleted.")
             exit()
         except Exception as e:
             LOGGER(__name__).error(f"❌ Unknown error while sending log message: {e}")
             exit()
 
-        # ✅ Check if bot is admin in the log group
+        # ✅ Check admin rights in log group
         try:
             member = await self.get_chat_member(config.LOG_GROUP_ID, self.id)
             if member.status != ChatMemberStatus.ADMINISTRATOR:
                 LOGGER(__name__).error("❌ Bot is NOT admin in the log group.")
                 exit()
         except Exception as e:
-            LOGGER(__name__).error(f"❌ Could not verify bot's admin status. Reason: {e}")
+            LOGGER(__name__).error(f"❌ Could not verify admin status: {e}")
             exit()
 
-        LOGGER(__name__).info(f"✅ Music Bot started successfully as {self.name} (@{self.username})")
+        LOGGER(__name__).info(f"✅ Bot fully started as {self.name} (@{self.username})")
 
     async def stop(self):
         LOGGER(__name__).info("🛑 Stopping bot...")
